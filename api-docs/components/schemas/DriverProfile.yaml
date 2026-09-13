@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 50
+  user_id:
+    type: integer
+    example: 102
+  license_number:
+    type: string
+    example: "A1-987654"
+  identity_card_number:
+    type: string
+    example: "012345678901"
+  status:
+    type: string
+    enum: [PENDING_APPROVAL, APPROVED, REJECTED, LOCKED]
+    example: "APPROVED"
+  rating_avg:
+    type: number
+    format: float
+    example: 4.85
+  created_at:
+    type: string
+    format: date-time
+    example: "2026-09-01T08:30:00Z"
