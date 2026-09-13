@@ -1,0 +1,51 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 5001
+  customer_id:
+    type: integer
+    example: 101
+  driver_id:
+    type: integer
+    nullable: true
+    example: 102
+  pickup_address:
+    type: string
+    example: "220 Điện Biên Phủ, Bình Thạnh, TP.HCM"
+  pickup_lat:
+    type: number
+    format: double
+    example: 10.796321
+  pickup_lng:
+    type: number
+    format: double
+    example: 106.708123
+  dropoff_address:
+    type: string
+    example: "Chợ Bến Thành, Quận 1, TP.HCM"
+  dropoff_lat:
+    type: number
+    format: double
+    example: 10.772543
+  dropoff_lng:
+    type: number
+    format: double
+    example: 106.698021
+  fare_amount:
+    type: number
+    format: double
+    example: 85000.00
+  status:
+    type: string
+    enum: [PENDING, ACCEPTED, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED]
+    example: "PENDING"
+  created_at:
+    type: string
+    format: date-time
+    example: "2026-09-13T15:30:00Z"
+  completed_at:
+    type: string
+    format: date-time
+    nullable: true
+    example: "2026-09-13T15:55:00Z"
