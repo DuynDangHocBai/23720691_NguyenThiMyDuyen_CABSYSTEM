@@ -1,0 +1,69 @@
+vehicles:
+  post:
+    tags:
+      - MOD01 - Vehicles
+    summary: Thêm mới phương tiện cho Tài xế (Create Vehicle)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/Vehicle.yaml#/VehicleInput'
+    responses:
+      '201':
+        description: Tạo thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/Vehicle.yaml#/Vehicle'
+
+vehicle_by_id:
+  get:
+    tags:
+      - MOD01 - Vehicles
+    summary: Xem chi tiết thông tin phương tiện
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/Vehicle.yaml#/Vehicle'
+  put:
+    tags:
+      - MOD01 - Vehicles
+    summary: Cập nhật thông tin phương tiện
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/Vehicle.yaml#/VehicleInput'
+    responses:
+      '200':
+        description: Cập nhật phương tiện thành công
+  delete:
+    tags:
+      - MOD01 - Vehicles
+    summary: Xóa phương tiện khỏi hệ thống
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '204':
+        description: Xóa phương tiện thành công
