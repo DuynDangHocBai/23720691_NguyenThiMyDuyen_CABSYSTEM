@@ -62,7 +62,8 @@ paths:
 
 components:
   securitySchemes:
-    $ref: './components/security.yaml'
+    BearerAuth:
+      $ref: './components/security.yaml#/BearerAuth'
   schemas:
     User:
       $ref: './components/schemas/User.yaml'
