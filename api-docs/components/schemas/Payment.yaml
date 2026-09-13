@@ -1,0 +1,27 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 9001
+  trip_id:
+    type: integer
+    example: 5001
+  amount:
+    type: number
+    format: double
+    example: 85000.00
+  payment_method:
+    type: string
+    enum: [CASH, E_WALLET, CREDIT_CARD]
+    example: "E_WALLET"
+  payment_status:
+    type: string
+    enum: [PENDING, SUCCESS, FAILED]
+    example: "SUCCESS"
+  transaction_id:
+    type: string
+    example: "TXN_123456789"
+  paid_at:
+    type: string
+    format: date-time
+    example: "2026-09-13T15:56:00Z"
