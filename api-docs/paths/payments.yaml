@@ -1,0 +1,50 @@
+trip_pay:
+  post:
+    tags:
+      - MOD04 - Pricing & Payment
+    summary: Xử lý / Tạo giao dịch thanh toán (Create Payment)
+    parameters:
+      - name: trip_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - payment_method
+            properties:
+              payment_method:
+                type: string
+                enum: [CASH, E_WALLET, CREDIT_CARD]
+                example: "E_WALLET"
+    responses:
+      '200':
+        description: Thanh toán hoàn tất thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/Payment.yaml'
+
+payment_by_id:
+  get:
+    tags:
+      - MOD04 - Pricing & Payment
+    summary: Xem thông tin chi tiết hóa đơn/giao dịch thanh toán
+    parameters:
+      - name: payment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Thông tin thanh toán
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/Payment.yaml'
