@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 101
+  phone_number:
+    type: string
+    example: "+84901234567"
+  full_name:
+    type: string
+    example: "Nguyễn Văn A"
+  email:
+    type: string
+    example: "nguyenvana@example.com"
+  role:
+    type: string
+    enum: [CUSTOMER, DRIVER, OPERATOR, ADMIN]
+    example: "CUSTOMER"
+  status:
+    type: string
+    enum: [ACTIVE, INACTIVE, LOCKED]
+    example: "ACTIVE"
+  created_at:
+    type: string
+    format: date-time
+    example: "2026-09-01T08:00:00Z"
