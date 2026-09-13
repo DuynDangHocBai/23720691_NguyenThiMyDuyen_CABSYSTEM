@@ -1,0 +1,161 @@
+me:
+  get:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Lấy thông tin tài khoản đang đăng nhập (Read User - FR01.1)
+    responses:
+      '200':
+        description: Thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/User.yaml'
+  put:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Cập nhật thông tin cá nhân (Update User - FR01.2)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              full_name:
+                type: string
+                example: "Nguyễn Văn B"
+              email:
+                type: string
+                example: "b.nguyen@example.com"
+    responses:
+      '200':
+        description: Cập nhật hồ sơ người dùng thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/User.yaml'
+
+user_by_id:
+  get:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Lấy thông tin người dùng theo ID (Admin/NVVH - Read User)
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/User.yaml'
+  delete:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Khóa / Xóa tài khoản người dùng (Delete User - FR06.2)
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '204':
+        description: Đã vô hiệu hóa / Xóa người dùng thành công
+
+driver_profile:
+  post:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Đăng ký / Tạo Hồ sơ & Phương tiện Tài xế (Create Driver Profile)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - license_number
+              - identity_card_number
+              - vehicle
+            properties:
+              license_number:
+                type: string
+                example: "A1-987654"
+              identity_card_number:
+                type: string
+                example: "012345678901"
+              vehicle:
+                $ref: '../components/schemas/Vehicle.yaml#/VehicleInput'
+    responses:
+      '201':
+        description: Gửi hồ sơ thành công, trạng thái PENDING_APPROVAL
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/DriverProfile.yaml'
+  get:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Xem chi tiết hồ sơ tài xế hiện tại
+    responses:
+      '200':
+        description: Thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/DriverProfile.yaml'
+  put:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Cập nhật hồ sơ tài xế
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              license_number:
+                type: string
+                example: "A1-987654"
+              identity_card_number:
+                type: string
+                example: "012345678901"
+    responses:
+      '200':
+        description: Cập nhật hồ sơ tài xế thành công
+
+driver_status:
+  patch:
+    tags:
+      - MOD01 - Account & Auth
+    summary: Bật/Tắt trạng thái sẵn sàng nhận chuyến của Tài xế
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - status
+            properties:
+              status:
+                type: string
+                enum: [READY, OFFLINE]
+                example: "READY"
+              current_lat:
+                type: number
+                format: double
+                example: 10.776889
+              current_lng:
+                type: number
+                format: double
+                example: 106.700806
+    responses:
+      '200':
+        description: Cập nhật trạng thái hoạt động thành công
