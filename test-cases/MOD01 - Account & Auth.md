@@ -1,7 +1,6 @@
 # MOD01 - Account & Auth
 
 - **Số test case:** 77
-- **Số cột:** 8
 
 | Test Case ID | Test Scenario | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- |
