@@ -1,7 +1,6 @@
 # MOD04 - Pricing & Payment
 
 - **Số test case:** 54
-- **Số cột:** 8
 
 | Test Case ID | Test Scenario | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- |
