@@ -1,83 +1,234 @@
-# MOD01 - Account & Auth
+# MOD01 - Quản lý Tài khoản & Định danh (Account & Auth)
 
-- **Số test case:** 77
+## Scenario: Đăng ký tài khoản
 
-| Test Case ID | Test Scenario | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| TC-REG-001 | Đăng ký tài khoản bằng SĐT + OTP | Gửi mã OTP thành công với SĐT hợp lệ chưa đăng ký | Đang ở màn hình Đăng ký | 1. Mở màn hình Đăng ký<br>2. Nhập SĐT<br>3. Nhấn 'Gửi mã OTP' | SĐT: 0901234567 | Hệ thống gửi OTP qua SMS thành công trong vòng 5 giây; hiển thị màn hình nhập OTP | High |
-| TC-REG-002 | Đăng ký tài khoản bằng SĐT + OTP | Xác thực OTP hợp lệ và tạo tài khoản Customer | OTP đã được gửi tới thiết bị | 1. Nhập mã OTP<br>2. Nhấn 'Xác nhận' | SĐT: 0901234567<br>OTP: 482913 | Xác thực thành công; tạo user role=CUSTOMER, status=ACTIVE; trả về JWT Token và vào giao diện Khách hàng | High |
-| TC-REG-003 | Đăng ký tài khoản bằng SĐT + OTP | Đăng ký tài khoản Tài xế và điều hướng đúng giao diện Driver | Người dùng chọn vai trò Tài xế | 1. Chọn vai trò 'Tài xế'<br>2. Nhập SĐT<br>3. Gửi OTP<br>4. Nhập OTP đúng | SĐT: 0912345678<br>Role: DRIVER<br>OTP: 771204 | Tạo user role=DRIVER; điều hướng vào màn hình hoàn thiện hồ sơ Tài xế | High |
-| TC-REG-004 | Đăng ký tài khoản bằng SĐT + OTP | Gửi lại mã OTP sau khi hết hiệu lực | OTP trước đó đã hết hạn | 1. Chờ OTP hết hạn<br>2. Nhấn 'Gửi lại mã'<br>3. Nhập mã mới | SĐT: 0901234567<br>OTP mới: 335120 | Mã OTP mới được gửi và xác thực thành công; mã cũ bị vô hiệu hóa | Medium |
-| TC-REG-005 | Đăng ký tài khoản bằng SĐT + OTP | Hoàn tất thông tin Họ tên, Email sau khi xác thực OTP | OTP đã xác thực thành công | 1. Nhập Họ tên<br>2. Nhập Email<br>3. Nhấn 'Hoàn tất' | Họ tên: Nguyễn Văn An<br>Email: an.nguyen@gmail.com | Lưu thông tin vào bảng USERS; hiển thị màn hình chính của ứng dụng | High |
-| TC-REG-006 | Đăng ký tài khoản bằng SĐT + OTP | Mật khẩu được mã hóa khi lưu xuống DB | Đăng ký thành công có đặt mật khẩu | 1. Đăng ký hoàn tất<br>2. Truy vấn bản ghi USERS | Password: Password@123 | Cột password_hash lưu chuỗi bcrypt/Argon2, không lưu plaintext (NFR02) | High |
-| TC-REG-007 | Đăng ký tài khoản bằng SĐT + OTP | Đăng ký bằng SĐT đã tồn tại | SĐT 0901234567 đã có tài khoản | 1. Nhập SĐT đã đăng ký<br>2. Nhấn 'Gửi mã OTP' | SĐT: 0901234567 | Từ chối đăng ký; thông báo số điện thoại đã được sử dụng | High |
-| TC-REG-008 | Đăng ký tài khoản bằng SĐT + OTP | Nhập sai mã OTP | OTP đã được gửi | 1. Nhập mã OTP sai<br>2. Nhấn 'Xác nhận' | OTP đúng: 482913<br>OTP nhập: 123456 | Xác thực thất bại; thông báo mã OTP không chính xác; không tạo tài khoản | High |
-| TC-REG-009 | Đăng ký tài khoản bằng SĐT + OTP | Nhập OTP đã hết hiệu lực | OTP đã quá thời gian hiệu lực | 1. Chờ hết hạn OTP<br>2. Nhập mã cũ<br>3. Xác nhận | OTP: 482913 (đã hết hạn) | Thông báo mã OTP đã hết hạn; yêu cầu gửi lại mã | High |
-| TC-REG-010 | Đăng ký tài khoản bằng SĐT + OTP | Nhập sai OTP quá số lần cho phép | Có cơ chế giới hạn số lần nhập sai | 1. Nhập sai OTP lặp lại theo số lần quy định | OTP sai: 000000 (lặp lại) | Khóa tạm thời chức năng xác thực; yêu cầu thử lại sau khoảng thời gian quy định | High |
-| TC-REG-011 | Đăng ký tài khoản bằng SĐT + OTP | Spam nút 'Gửi mã OTP' liên tục | Đang ở màn hình nhập SĐT | 1. Nhấn 'Gửi mã OTP' liên tiếp nhiều lần | SĐT: 0901234567 | Áp dụng rate limit; chỉ gửi 1 mã và hiển thị đếm ngược trước khi cho gửi lại | Medium |
-| TC-REG-012 | Đăng ký tài khoản bằng SĐT + OTP | Đăng ký với Email đã được tài khoản khác sử dụng | Email an.nguyen@gmail.com đã tồn tại | 1. Xác thực OTP<br>2. Nhập Email trùng<br>3. Hoàn tất | Email: an.nguyen@gmail.com | Từ chối; thông báo Email đã được sử dụng | Medium |
-| TC-REG-BND-013 | Đăng ký tài khoản bằng SĐT + OTP | Thời gian gửi OTP đúng ngưỡng 5 giây | Hệ thống tải bình thường | 1. Nhấn 'Gửi mã OTP'<br>2. Đo thời gian nhận SMS | SĐT: 0901234567 | OTP đến thiết bị trong ≤ 5 giây theo AC-FR01.1a | High |
-| TC-REG-BND-014 | Đăng ký tài khoản bằng SĐT + OTP | SĐT có độ dài tối thiểu hợp lệ (10 số) | Đang ở màn hình Đăng ký | 1. Nhập SĐT 10 số<br>2. Gửi OTP | SĐT: 0901234567 | Chấp nhận và gửi OTP thành công | Medium |
-| TC-REG-BND-015 | Đăng ký tài khoản bằng SĐT + OTP | SĐT ngắn hơn độ dài tối thiểu (9 số) | Đang ở màn hình Đăng ký | 1. Nhập SĐT 9 số<br>2. Gửi OTP | SĐT: 090123456 | Từ chối; báo lỗi số điện thoại không hợp lệ | Medium |
-| TC-REG-BND-016 | Đăng ký tài khoản bằng SĐT + OTP | Họ tên đúng độ dài tối đa cho phép (100 ký tự) | Giới hạn 100 ký tự | 1. Nhập Họ tên 100 ký tự<br>2. Lưu | Họ tên: chuỗi 100 ký tự | Chấp nhận và lưu đủ 100 ký tự | Low |
-| TC-REG-EMP-017 | Đăng ký tài khoản bằng SĐT + OTP | Để trống SĐT khi gửi OTP | Đang ở màn hình Đăng ký | 1. Để trống ô SĐT<br>2. Nhấn 'Gửi mã OTP' | SĐT: empty | Nút bị vô hiệu hóa hoặc báo lỗi bắt buộc nhập SĐT | High |
-| TC-REG-EMP-018 | Đăng ký tài khoản bằng SĐT + OTP | Để trống ô nhập OTP | OTP đã được gửi | 1. Không nhập OTP<br>2. Nhấn 'Xác nhận' | OTP: empty | Báo lỗi bắt buộc nhập mã OTP; không gọi API xác thực | High |
-| TC-REG-EMP-019 | Đăng ký tài khoản bằng SĐT + OTP | Request đăng ký thiếu trường phone_number | API Register đang hoạt động | 1. Gửi POST /auth/register<br>2. Bỏ trường phone_number | { "full_name": "Nguyễn Văn An" } | HTTP 400/422; trả lỗi validation nêu rõ trường thiếu; không tạo bản ghi | High |
-| TC-REG-FMT-020 | Đăng ký tài khoản bằng SĐT + OTP | SĐT chứa ký tự chữ và ký tự đặc biệt | Đang ở màn hình Đăng ký | 1. Nhập SĐT sai định dạng<br>2. Gửi OTP | SĐT: 090abc@#$ | Từ chối dữ liệu; báo lỗi định dạng số điện thoại không hợp lệ | Medium |
-| TC-AUTH-001 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng nhập thành công bằng Email và mật khẩu hợp lệ | Tài khoản đã đăng ký, status=ACTIVE | 1. Mở Login<br>2. Nhập Email<br>3. Nhập mật khẩu<br>4. Nhấn 'Đăng nhập' | Email: an.nguyen@gmail.com<br>Password: Password@123 | Đăng nhập thành công; trả về JWT Token và vào giao diện Khách hàng | High |
-| TC-AUTH-002 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng nhập tài khoản Driver và điều hướng đúng Role | Tài khoản role=DRIVER đã được duyệt | 1. Nhập Email/Password tài xế<br>2. Đăng nhập | Email: driver01@cab.vn<br>Password: Driver@123 | Vào giao diện Tài xế; hiển thị nút bật trạng thái Sẵn sàng | High |
-| TC-AUTH-003 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng nhập tài khoản Admin vào Admin Portal | Tài khoản role=ADMIN | 1. Mở Admin Portal<br>2. Nhập thông tin đăng nhập | Email: admin@cab.vn<br>Password: Admin@123 | Vào Admin Portal; hiển thị menu Giám sát vận hành và Báo cáo | High |
-| TC-AUTH-004 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | JWT Token chứa đúng thông tin Role và thời hạn | Đăng nhập thành công | 1. Đăng nhập<br>2. Giải mã payload token | Email: an.nguyen@gmail.com | Payload chứa user_id, role, exp hợp lệ; token ký đúng thuật toán cấu hình | High |
-| TC-AUTH-005 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Truy cập API được bảo vệ bằng token hợp lệ | Đã có JWT Token còn hạn | 1. Gọi GET /trips/history kèm Bearer token | Header: Authorization: Bearer <token> | HTTP 200; trả về dữ liệu đúng của người dùng đang đăng nhập | High |
-| TC-AUTH-006 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng xuất và vô hiệu hóa phiên | Đang đăng nhập | 1. Nhấn 'Đăng xuất'<br>2. Gọi lại API bằng token cũ | Token: <token cũ> | Phiên bị hủy; API trả HTTP 401 với token cũ | Medium |
-| TC-AUTH-007 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng nhập với Email không tồn tại | Hệ thống đang hoạt động | 1. Nhập Email chưa đăng ký<br>2. Nhập mật khẩu<br>3. Đăng nhập | Email: unknown@cab.vn<br>Password: Password@123 | Đăng nhập thất bại; thông báo chung 'thông tin đăng nhập không hợp lệ'; không tiết lộ email tồn tại hay không | High |
-| TC-AUTH-008 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng nhập với mật khẩu sai | Email tồn tại, tài khoản ACTIVE | 1. Nhập Email đúng<br>2. Nhập mật khẩu sai<br>3. Đăng nhập | Email: an.nguyen@gmail.com<br>Password: Wrong@123 | Đăng nhập thất bại; không phát sinh JWT Token | High |
-| TC-AUTH-009 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng nhập bằng tài khoản bị khóa (LOCKED) | Tài khoản ở trạng thái LOCKED | 1. Nhập đúng Email/Password<br>2. Đăng nhập | Email: locked@cab.vn<br>Password: Password@123 | Từ chối đăng nhập; thông báo tài khoản đã bị khóa, hướng dẫn liên hệ hỗ trợ | High |
-| TC-AUTH-010 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Tài xế PENDING_APPROVAL đăng nhập | Hồ sơ tài xế chưa được duyệt | 1. Đăng nhập tài khoản tài xế<br>2. Thử bật trạng thái Sẵn sàng | Email: driver02@cab.vn | Đăng nhập được nhưng chặn bật Sẵn sàng; thông báo hồ sơ đang chờ phê duyệt (AC-FR01.2b) | High |
-| TC-AUTH-011 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Đăng nhập sai mật khẩu nhiều lần liên tiếp | Có cơ chế giới hạn số lần sai | 1. Nhập sai mật khẩu lặp lại theo số lần quy định | Email: an.nguyen@gmail.com<br>Password: Wrong@123 | Sau số lần sai theo quy định, tài khoản bị khóa tạm thời hoặc yêu cầu xác minh bổ sung | High |
-| TC-AUTH-012 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Customer gọi API dành riêng cho Admin | Đăng nhập với role=CUSTOMER | 1. Gọi GET /admin/reports kèm token Customer | Role: CUSTOMER | HTTP 403 Forbidden; không trả dữ liệu quản trị | High |
-| TC-AUTH-013 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Sử dụng JWT Token đã hết hạn | Token đã quá thời hạn exp | 1. Gọi API kèm token hết hạn | Token: <expired> | HTTP 401; yêu cầu đăng nhập lại | High |
-| TC-AUTH-014 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Sử dụng JWT Token bị chỉnh sửa chữ ký | Có token hợp lệ | 1. Sửa payload role thành ADMIN<br>2. Gọi API quản trị | Token: <đã sửa role> | HTTP 401; hệ thống phát hiện chữ ký không hợp lệ | High |
-| TC-AUTH-BND-015 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Mật khẩu đúng độ dài tối thiểu 8 ký tự | Rule mật khẩu tối thiểu 8 ký tự | 1. Đăng nhập với mật khẩu 8 ký tự hợp lệ | Password: Pass@123 | Đăng nhập thành công | Medium |
-| TC-AUTH-BND-016 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Mật khẩu ngắn hơn tối thiểu (7 ký tự) | Rule mật khẩu tối thiểu 8 ký tự | 1. Nhập mật khẩu 7 ký tự<br>2. Đăng nhập | Password: Pas@123 | Từ chối; báo lỗi mật khẩu không đáp ứng quy tắc | Medium |
-| TC-AUTH-BND-017 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Thời gian phản hồi API đăng nhập | Hệ thống tải bình thường | 1. Gửi POST /auth/login<br>2. Đo thời gian phản hồi | Request hợp lệ | HTTP 200 và thời gian phản hồi < 200 ms (NFR01) | High |
-| TC-AUTH-EMP-018 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Để trống Email khi đăng nhập | Đang ở màn hình Login | 1. Để trống Email<br>2. Nhập mật khẩu<br>3. Đăng nhập | Email: empty<br>Password: Password@123 | Không cho đăng nhập; báo lỗi bắt buộc nhập Email | High |
-| TC-AUTH-EMP-019 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Để trống cả Email và mật khẩu | Đang ở màn hình Login | 1. Không nhập gì<br>2. Nhấn 'Đăng nhập' | Email: empty<br>Password: empty | Hiển thị lỗi validation trên cả hai trường; không gọi API | High |
-| TC-AUTH-FMT-020 | Đăng nhập Email-Mật khẩu & phân quyền theo Role | Email sai định dạng và chuỗi SQL Injection | Đang ở màn hình Login | 1. Nhập Email sai định dạng<br>2. Đăng nhập | Email: an.nguyen@@gmail<br>Password: ' OR '1'='1 | Báo lỗi định dạng Email; truy vấn được tham số hóa, không đăng nhập được, không lỗi 500 | High |
-| TC-PROF-001 | Cập nhật hồ sơ cá nhân | Cập nhật Họ tên thành công | Người dùng đã đăng nhập, ở trang Thông tin cá nhân | 1. Sửa Họ tên<br>2. Nhấn 'Lưu thay đổi' | Họ tên: Nguyễn Văn Anh | Dữ liệu trong DB được cập nhật và hiển thị ngay trên giao diện (AC-FR01.2a) | High |
-| TC-PROF-002 | Cập nhật hồ sơ cá nhân | Cập nhật Email thành công | Đã đăng nhập | 1. Sửa Email<br>2. Lưu thay đổi | Email: anh.nguyen@gmail.com | Email mới được lưu; hiển thị thông báo cập nhật thành công | Medium |
-| TC-PROF-003 | Cập nhật hồ sơ cá nhân | Tải lên ảnh đại diện hợp lệ | Đã đăng nhập | 1. Chọn ảnh Avatar<br>2. Tải lên<br>3. Lưu | File: avatar.jpg, 1.2 MB | Ảnh được lưu và hiển thị ngay trên hồ sơ | Medium |
-| TC-PROF-004 | Cập nhật hồ sơ cá nhân | Tài xế cập nhật thông tin phương tiện | Tài khoản Driver đã duyệt | 1. Mở mục Phương tiện<br>2. Sửa Model/Màu xe<br>3. Lưu | Model: Toyota Vios<br>Color: Trắng | Bảng VEHICLES được cập nhật đúng dữ liệu | Medium |
-| TC-PROF-005 | Cập nhật hồ sơ cá nhân | Xem lại hồ sơ sau khi đăng nhập lại | Đã cập nhật hồ sơ trước đó | 1. Đăng xuất<br>2. Đăng nhập lại<br>3. Mở Thông tin cá nhân | Tài khoản: an.nguyen@gmail.com | Hiển thị đúng dữ liệu đã lưu, không bị mất thay đổi | Medium |
-| TC-PROF-006 | Cập nhật hồ sơ cá nhân | Cập nhật Email trùng với người dùng khác | Email driver01@cab.vn đã tồn tại | 1. Nhập Email trùng<br>2. Lưu | Email: driver01@cab.vn | Từ chối lưu; báo lỗi Email đã được sử dụng | High |
-| TC-PROF-007 | Cập nhật hồ sơ cá nhân | Người dùng A sửa hồ sơ của người dùng B | Có token của user A | 1. Gọi PUT /users/{id_B}/profile bằng token A | id_B: 1002 | HTTP 403; dữ liệu của B không thay đổi | High |
-| TC-PROF-008 | Cập nhật hồ sơ cá nhân | Cập nhật hồ sơ khi mất kết nối mạng | Đã đăng nhập, tắt mạng | 1. Sửa thông tin<br>2. Nhấn Lưu khi offline | Họ tên: Nguyễn Văn B | Hiển thị lỗi kết nối; không mất dữ liệu đang nhập, cho phép thử lại | Medium |
-| TC-PROF-009 | Cập nhật hồ sơ cá nhân | Sửa trực tiếp trường role qua API | Đăng nhập role=CUSTOMER | 1. Gửi PUT /users/me với role=ADMIN | { "role": "ADMIN" } | Trường role bị bỏ qua hoặc trả HTTP 403; quyền không thay đổi | High |
-| TC-PROF-010 | Cập nhật hồ sơ cá nhân | Tải lên file avatar vượt dung lượng cho phép | Giới hạn 5 MB | 1. Chọn file 10 MB<br>2. Tải lên | File: avatar_big.jpg, 10 MB | Từ chối; báo lỗi vượt dung lượng cho phép | Medium |
-| TC-PROF-BND-011 | Cập nhật hồ sơ cá nhân | Họ tên đúng độ dài tối đa (100 ký tự) | Giới hạn 100 ký tự | 1. Nhập Họ tên 100 ký tự<br>2. Lưu | Họ tên: chuỗi 100 ký tự | Lưu thành công, không cắt bớt dữ liệu | Low |
-| TC-PROF-BND-012 | Cập nhật hồ sơ cá nhân | Họ tên vượt độ dài tối đa (101 ký tự) | Giới hạn 100 ký tự | 1. Nhập Họ tên 101 ký tự<br>2. Lưu | Họ tên: chuỗi 101 ký tự | Từ chối; báo lỗi vượt độ dài cho phép | Low |
-| TC-PROF-BND-013 | Cập nhật hồ sơ cá nhân | Avatar đúng ngưỡng dung lượng tối đa (5 MB) | Giới hạn 5 MB | 1. Tải lên file đúng 5 MB | File: avatar_5mb.jpg | Tải lên thành công | Low |
-| TC-PROF-EMP-014 | Cập nhật hồ sơ cá nhân | Xóa trắng Họ tên rồi lưu | Đã đăng nhập | 1. Xóa toàn bộ Họ tên<br>2. Lưu | Họ tên: empty | Báo lỗi bắt buộc nhập Họ tên; không lưu giá trị rỗng | High |
-| TC-PROF-EMP-015 | Cập nhật hồ sơ cá nhân | Nhập Họ tên chỉ gồm khoảng trắng | Đã đăng nhập | 1. Nhập chuỗi toàn dấu cách<br>2. Lưu | Họ tên: '     ' | Hệ thống trim và coi là rỗng; báo lỗi bắt buộc nhập | Medium |
-| TC-PROF-EMP-016 | Cập nhật hồ sơ cá nhân | Request cập nhật hồ sơ với body rỗng | API đang hoạt động | 1. Gửi PUT /users/me với body rỗng | { } | HTTP 400; thông báo không có dữ liệu để cập nhật | Medium |
-| TC-PROF-FMT-017 | Cập nhật hồ sơ cá nhân | Email sai định dạng | Đã đăng nhập | 1. Nhập Email thiếu tên miền<br>2. Lưu | Email: an.nguyen@ | Báo lỗi định dạng Email không hợp lệ; không lưu | Medium |
-| TC-PROF-FMT-018 | Cập nhật hồ sơ cá nhân | Tải lên avatar sai định dạng file | Chỉ chấp nhận jpg/png | 1. Chọn file .exe<br>2. Tải lên | File: virus.exe | Từ chối file; báo lỗi định dạng không được hỗ trợ | High |
-| TC-PROF-FMT-019 | Cập nhật hồ sơ cá nhân | Họ tên chứa mã script (XSS) | Đã đăng nhập | 1. Nhập chuỗi script vào Họ tên<br>2. Lưu | Họ tên: <script>alert(1)</script> | Dữ liệu được escape khi hiển thị; không thực thi script | High |
-| TC-DOCS-001 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Tài xế tải đầy đủ Bằng lái, Giấy tờ xe, Biển số và gửi xét duyệt | Tài khoản Driver mới đăng ký | 1. Mở màn hình Hồ sơ xét duyệt<br>2. Tải Bằng lái<br>3. Tải Giấy tờ xe<br>4. Nhập Biển số<br>5. Nhấn 'Gửi hồ sơ xét duyệt' | license.jpg, vehicle_doc.jpg<br>Biển số: 51H-123.45 | Trạng thái tài khoản chuyển PENDING_APPROVAL; tài xế chưa thể bật Sẵn sàng (AC-FR01.2b) | High |
-| TC-DOCS-002 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Admin phê duyệt hồ sơ hợp lệ | Hồ sơ đang PENDING_APPROVAL | 1. Admin mở danh sách hồ sơ chờ<br>2. Kiểm tra giấy tờ<br>3. Nhấn 'Phê duyệt' | driver_id: 2001 | Hồ sơ Tài xế được kích hoạt (ACTIVE); tài xế bật được trạng thái Sẵn sàng | High |
-| TC-DOCS-003 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Tài xế bật trạng thái Sẵn sàng sau khi được duyệt | Hồ sơ đã ACTIVE | 1. Đăng nhập app Tài xế<br>2. Bật 'Sẵn sàng nhận chuyến' | driver_id: 2001 | Trạng thái chuyển READY; tài xế nằm trong danh sách được điều phối | High |
-| TC-DOCS-004 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Tài xế nộp lại hồ sơ sau khi bị từ chối | Hồ sơ đã bị từ chối kèm lý do | 1. Xem lý do từ chối<br>2. Tải lại giấy tờ đúng<br>3. Gửi lại hồ sơ | license_new.jpg | Hồ sơ quay lại trạng thái PENDING_APPROVAL và hiển thị trong hàng chờ của Admin | High |
-| TC-DOCS-005 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Tải lên nhiều ảnh giấy tờ trong một lần gửi | Tài khoản Driver mới | 1. Chọn nhiều file ảnh<br>2. Tải lên<br>3. Gửi hồ sơ | 3 file .jpg, mỗi file 1-2 MB | Tất cả file được lưu và hiển thị đúng trong hồ sơ | Medium |
-| TC-DOCS-006 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Gửi hồ sơ khi thiếu Bằng lái | Chưa tải Bằng lái | 1. Chỉ tải Giấy tờ xe<br>2. Nhấn 'Gửi hồ sơ xét duyệt' | vehicle_doc.jpg | Chặn gửi hồ sơ; báo lỗi thiếu Bằng lái | High |
-| TC-DOCS-007 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Admin từ chối hồ sơ không hợp lệ kèm lý do | Hồ sơ PENDING_APPROVAL, ảnh mờ | 1. Mở hồ sơ<br>2. Nhấn 'Từ chối'<br>3. Nhập lý do | Lý do: Ảnh bằng lái không rõ nét | Hệ thống gửi thông báo từ chối kèm lý do cho tài xế; hồ sơ quay về trạng thái cần bổ sung | High |
-| TC-DOCS-008 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Tài xế chưa duyệt cố bật trạng thái Sẵn sàng | Hồ sơ PENDING_APPROVAL | 1. Đăng nhập<br>2. Bật 'Sẵn sàng' | driver_id: 2002 | Chặn thao tác; thông báo hồ sơ đang chờ phê duyệt | High |
-| TC-DOCS-009 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Đăng ký biển số xe đã được tài xế khác sử dụng | Biển số 51H-123.45 đã tồn tại | 1. Nhập biển số trùng<br>2. Gửi hồ sơ | Biển số: 51H-123.45 | Từ chối; báo lỗi biển số đã được đăng ký | High |
-| TC-DOCS-010 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Tài xế tự phê duyệt hồ sơ qua API | Đăng nhập role=DRIVER | 1. Gọi PUT /admin/drivers/2002/approve bằng token Driver | driver_id: 2002 | HTTP 403; trạng thái hồ sơ không thay đổi | High |
-| TC-DOCS-BND-011 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Ảnh giấy tờ đúng dung lượng tối đa (5 MB) | Giới hạn 5 MB/ảnh | 1. Tải file đúng 5 MB<br>2. Gửi hồ sơ | license_5mb.jpg | Tải lên thành công | Medium |
-| TC-DOCS-BND-012 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Ảnh giấy tờ vượt dung lượng tối đa | Giới hạn 5 MB/ảnh | 1. Tải file 5.1 MB | license_51mb.jpg | Từ chối; báo lỗi vượt dung lượng cho phép | Medium |
-| TC-DOCS-BND-013 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Biển số đúng độ dài chuẩn Việt Nam | Đang nhập hồ sơ | 1. Nhập biển số 9 ký tự<br>2. Lưu | Biển số: 51H-12345 | Chấp nhận và chuẩn hóa hiển thị đúng định dạng | Medium |
-| TC-DOCS-EMP-014 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Gửi hồ sơ khi chưa tải bất kỳ giấy tờ nào | Tài khoản Driver mới | 1. Không tải file<br>2. Nhấn 'Gửi hồ sơ xét duyệt' | Không có file | Chặn gửi; hiển thị lỗi validation cho từng mục bắt buộc | High |
-| TC-DOCS-EMP-015 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Để trống ô Biển số xe | Đã tải đủ ảnh giấy tờ | 1. Bỏ trống Biển số<br>2. Gửi hồ sơ | Biển số: empty | Báo lỗi bắt buộc nhập biển số xe | High |
-| TC-DOCS-EMP-016 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Admin từ chối hồ sơ mà không nhập lý do | Hồ sơ PENDING_APPROVAL | 1. Nhấn 'Từ chối'<br>2. Bỏ trống lý do<br>3. Xác nhận | Lý do: empty | Chặn thao tác; yêu cầu nhập lý do từ chối | Medium |
-| TC-DOCS-FMT-017 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Biển số sai định dạng | Đang nhập hồ sơ | 1. Nhập biển số sai quy cách<br>2. Lưu | Biển số: ABC@@123 | Báo lỗi định dạng biển số không hợp lệ | Medium |
-| TC-DOCS-FMT-018 | Tài xế tải giấy tờ & gửi hồ sơ xét duyệt | Tải lên giấy tờ sai định dạng file | Chỉ chấp nhận jpg/png/pdf | 1. Chọn file .docx<br>2. Tải lên | license.docx | Từ chối file; báo lỗi định dạng không được hỗ trợ | High |
+| Test Case ID | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
+| --- | --- | --- | --- | --- | --- | --- |
+| TC-REG-001 | Gửi mã OTP thành công với SĐT hợp lệ chưa đăng ký | Đang ở màn hình Đăng ký | 1. Mở màn hình Đăng ký<br>
+
+<br>2. Nhập SĐT<br>
+
+<br>3. Nhấn 'Gửi mã OTP' | SĐT: 0901234567 | Hệ thống gửi OTP qua SMS thành công trong vòng 5 giây; hiển thị màn hình nhập OTP | High |
+| TC-REG-002 | Xác thực OTP hợp lệ và tạo tài khoản Customer | OTP đã được gửi tới thiết bị | 1. Nhập mã OTP<br>
+
+<br>2. Nhấn 'Xác nhận' | SĐT: 0901234567<br>
+
+<br>OTP: 482913 | Xác thực thành công; tạo user role=CUSTOMER, status=ACTIVE; trả về JWT Token và vào giao diện Khách hàng | High |
+| TC-REG-003 | Đăng ký tài khoản Tài xế và điều hướng đúng giao diện Driver | Đang ở màn hình Chọn loại tài khoản | 1. Chọn loại tài khoản 'Tài xế'<br>
+
+<br>2. Hoàn tất xác thực OTP | SĐT: 0908889999 | Tạo user role=DRIVER, status=PENDING_APPROVAL; chuyển sang màn hình nộp hồ sơ tài xế | High |
+| TC-REG-004 | Gửi lại mã OTP sau khi hết hiệu lực | Đã hết thời gian chờ 60 giây của OTP cũ | 1. Nhấn nút 'Gửi lại mã OTP'<br>
+
+<br>2. Kiểm tra SMS | SĐT: 0901234567 | Mã OTP mới được gửi thành công; mã OTP cũ bị vô hiệu hóa | Medium |
+| TC-REG-005 | Hoàn tất thông tin Họ tên, Email sau khi xác thực OTP | Đã xác thực OTP thành công | 1. Nhập Họ tên, Email<br>
+
+<br>2. Nhập Mật khẩu hợp lệ<br>
+
+<br>3. Nhấn 'Hoàn tất' | Name: Nguyen Van A<br>
+
+<br>Email: ana@gmail.com<br>
+
+<br>Pass: Abc@1234 | Cập nhật thông tin tài khoản thành công; chuyển sang Trang chủ | High |
+| TC-REG-006 | Đăng ký bằng SĐT đã tồn tại | SĐT 0901234567 đã có trong DB | 1. Nhập SĐT đã tồn tại<br>
+
+<br>2. Nhấn 'Gửi mã OTP' | SĐT: 0901234567 | Hiển thị lỗi 'Số điện thoại đã được sử dụng. Vui lòng đăng nhập hoặc dùng SĐT khác' | High |
+| TC-REG-007 | Nhập sai mã OTP | Đã bấm gửi OTP thành công | 1. Nhập sai mã OTP<br>
+
+<br>2. Nhấn 'Xác nhận' | OTP sai: 000000 | Báo lỗi 'Mã OTP không chính xác. Vui lòng thử lại'; giữ nguyên màn hình OTP | High |
+| TC-REG-008 | Nhập OTP đã hết hiệu lực | Quá 3 phút kể từ khi gửi OTP | 1. Nhập mã OTP cũ<br>
+
+<br>2. Nhấn 'Xác nhận' | OTP hết hạn | Báo lỗi 'Mã OTP đã hết hiệu lực. Vui lòng yêu cầu mã mới' | High |
+| TC-REG-009 | Nhập sai OTP quá số lần cho phép | Nhập sai OTP 4 lần liên tiếp | 1. Nhập sai OTP lần thứ 5 | OTP sai | Khóa tính năng xác thực OTP của SĐT trong 15 phút; hiển thị thông báo khóa tạm thời | High |
+| TC-REG-010 | Đăng ký với Email đã được tài khoản khác sử dụng | Email 'exist@gmail.com' đã đăng ký | 1. Hoàn tất OTP<br>
+
+<br>2. Nhập Email trùng<br>
+
+<br>3. Bấm 'Hoàn tất' | Email: exist@gmail.com | Báo lỗi 'Email đã được sử dụng bởi tài khoản khác' | Medium |
+| TC-REG-011 | SĐT ngắn hơn độ dài tối thiểu (9 số) | Đang ở màn hình Đăng ký | 1. Nhập SĐT 9 chữ số<br>
+
+<br>2. Nhấn 'Gửi mã OTP' | SĐT: 090123456 | Nút 'Gửi mã OTP' bị disable hoặc hiển thị lỗi 'Số điện thoại phải đủ 10 chữ số' | Medium |
+| TC-REG-012 | Để trống SĐT khi gửi OTP | Đang ở màn hình Đăng ký | 1. Để trống ô SĐT<br>
+
+<br>2. Nhấn 'Gửi mã OTP' | SĐT: [rỗng] | Hiển thị thông báo 'Vui lòng nhập số điện thoại' | High |
+| TC-REG-013 | Để trống ô nhập OTP | Đã gửi OTP thành công | 1. Để trống ô OTP<br>
+
+<br>2. Nhấn 'Xác nhận' | OTP: [rỗng] | Hiển thị thông báo 'Vui lòng nhập mã OTP' | High |
+| TC-REG-014 | SĐT chứa ký tự chữ và ký tự đặc biệt | Đang ở màn hình Đăng ký | 1. Nhập SĐT chứa chữ/ký tự<br>
+
+<br>2. Nhấn 'Gửi mã OTP' | SĐT: 09012abc#$ | Bàn phím không cho nhập chữ/ký tự đặc biệt hoặc báo 'SĐT chỉ được chứa số' | Medium |
+| TC-REG-015 | Spam nút 'Gửi mã OTP' liên tục | Đang ở màn hình Đăng ký | 1. Nhấn nút 'Gửi mã OTP' 5 lần liên tiếp trong 2 giây | SĐT: 0901234567 | Chỉ xử lý 1 request gửi OTP đầu tiên; disable nút bấm trong 60 giây (Rate limiting) | Medium |
+| TC-REG-016 | Request đăng ký thiếu trường phone_number | Gọi API POST /api/v1/auth/register-otp | 1. Gửi payload thiếu field 'phone_number' | Payload: {} | API trả về HTTP Status 400 Bad Request; message 'phone_number is required' | High |
+| TC-REG-017 | Mật khẩu được mã hóa khi lưu xuống DB | Đăng ký tài khoản mới thành công | 1. Kiểm tra trực tiếp bảng `users` trong CSDL | User ID vừa tạo | Mật khẩu được lưu dưới dạng chuỗi Hash (Bcrypt/Argon2), không lưu xâu rõ (plaintext) | High |
+| TC-REG-018 | Họ tên đúng độ dài tối đa cho phép (100 ký tự) | Đang điền hồ sơ sau OTP | 1. Nhập Họ tên 100 ký tự hợp lệ<br>
+
+<br>2. Lưu thông tin | Name: 100 ký tự | Lưu thành công; hiển thị đủ 100 ký tự trên trang thông tin | Low |
+
+---
+
+## Scenario: Đăng nhập Email-Mật khẩu & phân quyền theo Role
+
+| Test Case ID | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
+| --- | --- | --- | --- | --- | --- | --- |
+| TC-AUTH-001 | Đăng nhập thành công bằng Email và mật khẩu hợp lệ | Tài khoản Customer active | 1. Mở màn hình Đăng nhập<br>
+
+<br>2. Nhập Email, Mật khẩu<br>
+
+<br>3. Nhấn 'Đăng nhập' | Email: customer@cab.com<br>
+
+<br>Pass: Pass123! | Đăng nhập thành công; trả về Bearer JWT Token; chuyển về Trang chủ Khách hàng | High |
+| TC-AUTH-002 | Đăng nhập tài khoản Driver và điều hướng đúng Role | Tài khoản Driver active | 1. Nhập Email/Pass Driver<br>
+
+<br>2. Nhấn 'Đăng nhập' | Email: driver@cab.com<br>
+
+<br>Pass: Pass123! | Đăng nhập thành công; điều hướng đến Màn hình Tài xế (Sẵn sàng nhận chuyến) | High |
+| TC-AUTH-003 | Đăng nhập tài khoản Admin vào Admin Portal | Tài khoản Admin active | 1. Truy cập Admin Portal<br>
+
+<br>2. Đăng nhập tài khoản Admin | Email: admin@cab.com<br>
+
+<br>Pass: Pass123! | Đăng nhập thành công; điều hướng đến Màn hình Quản trị Admin Dashboard | High |
+| TC-AUTH-004 | JWT Token chứa đúng thông tin Role và thời hạn | Đã đăng nhập thành công | 1. Giải mã chuỗi JWT Token (Payload) | JWT Token | Claim chứa đúng `user_id`, `role` (CUSTOMER/DRIVER/ADMIN) và `exp` validity (e.g. 24h) | High |
+| TC-AUTH-005 | Truy cập API được bảo vệ bằng token hợp lệ | Token còn hạn | 1. Gọi API `GET /api/v1/profile` đính kèm Header `Authorization: Bearer <token>` | Token hợp lệ | HTTP 200 OK; Trả về đúng thông tin hồ sơ của user sở hữu token | High |
+| TC-AUTH-006 | Đăng xuất và vô hiệu hóa phiên | Đang đăng nhập | 1. Nhấn nút 'Đăng xuất'<br>
+
+<br>2. Dùng token cũ gọi API bảo vệ | Token vừa logout | Đăng xuất thành công; API trả về HTTP 401 Unauthorized do Token đã bị ngắt phiên | Medium |
+| TC-AUTH-007 | Đăng nhập với Email không tồn tại | Email chưa từng đăng ký | 1. Nhập Email chưa có trong hệ thống<br>
+
+<br>2. Nhấn 'Đăng nhập' | Email: notexist@cab.com<br>
+
+<br>Pass: Pass123! | Báo lỗi 'Email hoặc mật khẩu không chính xác' (không chỉ định rõ email chưa tồn tại để bảo mật) | High |
+| TC-AUTH-008 | Đăng nhập với mật khẩu sai | Email có trong hệ thống | 1. Nhập đúng Email<br>
+
+<br>2. Nhập sai Mật khẩu<br>
+
+<br>3. Nhấn 'Đăng nhập' | Email: customer@cab.com<br>
+
+<br>Pass: WrongPass123 | Báo lỗi 'Email hoặc mật khẩu không chính xác' | High |
+| TC-AUTH-009 | Đăng nhập bằng tài khoản bị khóa (LOCKED) | User status = LOCKED | 1. Nhập Email/Pass của tài khoản đã bị khóa | Email: locked@cab.com<br>
+
+<br>Pass: Pass123! | Báo lỗi 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ bộ phận hỗ trợ' | High |
+| TC-AUTH-010 | Tài xế PENDING_APPROVAL đăng nhập | Tài xế chưa được duyệt hồ sơ | 1. Đăng nhập tài khoản Driver PENDING | Email: pending_driver@cab.com | Đăng nhập thành công nhưng chỉ hiển thị màn hình 'Hồ sơ đang chờ duyệt' | High |
+| TC-AUTH-011 | Đăng nhập sai mật khẩu nhiều lần liên tiếp | Đang ở màn hình Đăng nhập | 1. Nhập sai mật khẩu 5 lần liên tiếp | Email: customer@cab.com | Tự động tạm khóa tài khoản trong 15 phút hoặc yêu cầu giải CAPTCHA | High |
+| TC-AUTH-012 | Customer gọi API dành riêng cho Admin | Đã đăng nhập vai trò CUSTOMER | 1. Gọi API `GET /api/v1/admin/users` dùng Token Customer | Token Customer | API trả về HTTP status 403 Forbidden | High |
+| TC-AUTH-013 | Sử dụng JWT Token đã hết hạn | Token đã quá thời hạn `exp` | 1. Gọi API đính kèm Token hết hạn | Expired Token | API trả về HTTP status 401 Unauthorized; message 'Token has expired' | High |
+| TC-AUTH-014 | Sử dụng JWT Token bị chỉnh sửa chữ ký | Modded Signature Token | 1. Sửa payload của JWT (e.g. đổi role thành ADMIN) nhưng giữ nguyên signature | Tampered Token | API trả về HTTP status 401 Unauthorized; message 'Invalid signature' | High |
+| TC-AUTH-015 | Mật khẩu ngắn hơn tối thiểu (7 ký tự) | Màn hình Đăng nhập | 1. Nhập mật khẩu 7 ký tự<br>
+
+<br>2. Nhấn 'Đăng nhập' | Pass: 1234567 | Báo lỗi validation 'Mật khẩu phải chứa ít nhất 8 ký tự' | Medium |
+| TC-AUTH-016 | Để trống Email khi đăng nhập | Màn hình Đăng nhập | 1. Để trống Email, nhập Mật khẩu<br>
+
+<br>2. Bấm 'Đăng nhập' | Email: [rỗng] | Báo lỗi 'Vui lòng nhập Email' | High |
+| TC-AUTH-017 | Email sai định dạng và chuỗi SQL Injection | Màn hình Đăng nhập | 1. Nhập `' OR '1'='1` vào ô Email<br>
+
+<br>2. Bấm 'Đăng nhập' | Email: ' OR '1'='1 | Hiển thị lỗi định dạng Email không hợp lệ; hệ thống an toàn không bị lọt qua đăng nhập | High |
+| TC-AUTH-018 | Thời gian phản hồi API đăng nhập | Mạng ổn định | 1. Gửi request `POST /api/v1/auth/login`<br>
+
+<br>2. Đo response time | Request chuẩn | API phản hồi thành công trong thời gian < 2000ms (NFR) | High |
+
+---
+
+## Scenario: Cập nhật hồ sơ cá nhân
+
+| Test Case ID | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
+| --- | --- | --- | --- | --- | --- | --- |
+| TC-PROF-001 | Cập nhật Họ tên thành công | Đã đăng nhập, ở màn Hồ sơ | 1. Sửa Họ tên mới<br>
+
+<br>2. Nhấn 'Lưu thay đổi' | Name: Nguyen Van B | Thông tin được lưu thành công; hiển thị Họ tên mới trên ứng dụng | High |
+| TC-PROF-002 | Cập nhật Email thành công | Đã đăng nhập, ở màn Hồ sơ | 1. Nhập Email mới hợp lệ<br>
+
+<br>2. Nhấn 'Lưu' | Email: newemail@gmail.com | Lưu thành công; gửi mail xác nhận đến địa chỉ email mới | Medium |
+| TC-PROF-003 | Tải lên ảnh đại diện hợp lệ | File ảnh PNG/JPG < 5MB | 1. Chọn file ảnh avatar hợp lệ<br>
+
+<br>2. Nhấn 'Tải lên' | File: avatar.jpg (2MB) | Ảnh đại diện cập nhật thành công và hiển thị rõ nét | Medium |
+| TC-PROF-004 | Tài xế cập nhật thông tin phương tiện | Tài xế đã đăng nhập | 1. Cập nhật Hãng xe, Dòng xe, Màu xe<br>
+
+<br>2. Bấm 'Lưu' | Xe: Honda City, Đen | Thông tin xe được lưu cập nhật thành công | Medium |
+| TC-PROF-005 | Xem lại hồ sơ sau khi đăng nhập lại | Đã lưu hồ sơ mới thành công | 1. Đăng xuất<br>
+
+<br>2. Đăng nhập lại<br>
+
+<br>3. Vào màn hình Hồ sơ | Tài khoản vừa sửa | Các thông tin mới lưu vẫn giữ nguyên đúng dữ liệu | Medium |
+| TC-PROF-006 | Cập nhật Email trùng với người dùng khác | Email 'other@gmail.com' đã tồn tại | 1. Nhập Email trùng<br>
+
+<br>2. Nhấn 'Lưu' | Email: other@gmail.com | Báo lỗi 'Email này đã được sử dụng bởi người dùng khác' | High |
+| TC-PROF-007 | Người dùng A sửa hồ sơ của người dùng B | Dùng API `PUT /api/v1/profile` | 1. User A truyền `user_id` của User B vào request body | User_id của B | Hệ thống chỉ cập nhật hồ sơ của chính User A dựa theo Token (hoặc báo 403 Forbidden) | High |
+| TC-PROF-008 | Sửa trực tiếp trường role qua API | Dùng API `PUT /api/v1/profile` | 1. Gửi payload cập nhật kèm `"role": "ADMIN"` | Role: ADMIN | Hệ thống bỏ qua field `role` hoặc trả về lỗi 400/403; Role của user không bị thay đổi | High |
+| TC-PROF-009 | Tải lên file avatar vượt dung lượng cho phép | File > 5MB | 1. Chọn file ảnh 8MB<br>
+
+<br>2. Nhấn 'Tải lên' | File: big_photo.png (8MB) | Báo lỗi 'Dung lượng ảnh vượt quá giới hạn tối đa 5MB' | Medium |
+| TC-PROF-010 | Xóa trắng Họ tên rồi lưu | Màn hình Chỉnh sửa hồ sơ | 1. Xóa toàn bộ ký tự trong ô Họ tên<br>
+
+<br>2. Nhấn 'Lưu' | Name: [rỗng] | Báo lỗi 'Họ và tên không được để trống' | High |
+| TC-PROF-011 | Email sai định dạng | Màn hình Chỉnh sửa hồ sơ | 1. Nhập `abc@xyz`<br>
+
+<br>2. Nhấn 'Lưu' | Email: abc@xyz | Báo lỗi 'Định dạng Email không hợp lệ' | Medium |
+| TC-PROF-012 | Tải lên avatar sai định dạng file | File PDF/EXE | 1. Chọn file document.pdf<br>
+
+<br>2. Bấm 'Tải lên' | File: document.pdf | Báo lỗi 'Định dạng file không hỗ trợ. Chỉ chấp nhận JPG, PNG' | High |
+| TC-PROF-013 | Họ tên chứa mã script (XSS) | Màn hình Chỉnh sửa hồ sơ | 1. Nhập `<script>alert('xss')</script>` vào Họ tên<br>
+
+<br>2. Nhấn 'Lưu' | Name: `<script>...` | Hệ thống Encode/Sanitize chuỗi nhập vào; hiển thị dưới dạng văn bản thường, không thực thi script | High |
+| TC-PROF-014 | Cập nhật hồ sơ khi mất kết nối mạng | Thiết bị offline | 1. Tắt mạng internet<br>
+
+<br>2. Nhấn 'Lưu thay đổi' | Không có mạng | Báo lỗi 'Kết nối mạng bị gián đoạn. Vui lòng kiểm tra lại internet' | Medium |
+
+---
+
+## Scenario: Tài xế tải giấy tờ & gửi hồ sơ xét duyệt
+
+| Test Case ID | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
+| --- | --- | --- | --- | --- | --- | --- |
+| TC-DOCS-001 | Tài xế tải đầy đủ Bằng lái, Giấy tờ xe, Biển số và gửi xét duyệt | Tài xế tài khoản PENDING | 1. Tải ảnh Bằng lái (GTLX)<br>
+
+<br>2. Tải ảnh Đăng ký xe<br>
+
+<br>3. Nhập Biển số xe<br>
+
+<br>4. Nhấn 'Gửi xét duyệt' | Biển số: 29A-123.45<br>
+
+<br>Ảnh hợp lệ | Hồ sơ chuyển sang trạng thái PENDING_APPROVAL thành công; hiển thị màn hình chờ Admin duyệt | High |
+| TC-DOCS-002 | Admin phê duyệt hồ sơ hợp lệ | Admin đăng nhập Portal, có hồ sơ tài xế chờ duyệt | 1. Xem chi tiết hồ sơ tài xế<br>
+
+<br>2. Nhấn 'Phê duyệt' | Driver ID: 102 | Hồ sơ tài xế đổi sang status APPROVED/ACTIVE; gửi thông báo Push/SMS cho tài xế | High |
+| TC-DOCS-003 | Tài xế bật trạng thái Sẵn sàng sau khi được duyệt | Tài xế status = APPROVED | 1. Mở ứng dụng Driver<br>
+
+<br>2. Bật công tắc 'Sẵn sàng đón khách' | Status: APPROVED | Trạng thái chuyển sang ONLINE; tài xế bắt đầu nhận được cuốc xe từ hệ thống | High |
+| TC-DOCS-004 | Tài xế nộp lại hồ sơ sau khi bị từ chối | Hồ sơ tài xế status = REJECTED | 1. Xem lý do từ chối<br>
+
+<br>2. Tải lại ảnh giấy tờ mờ<br>
+
+<br>3. Nhấn 'Gửi lại' | Hồ sơ bổ sung | Trạng thái hồ sơ chuyển lại thành PENDING_APPROVAL | High |
+| TC-DOCS-005 | Tải lên nhiều ảnh giấy tờ trong một lần gửi | Màn hình nộp giấy tờ | 1. Chọn 2 ảnh mặt trước/sau bằng lái<br>
+
+<br>2. Nhấn 'Tải lên' | 2 files ảnh JPG | Cả 2 ảnh đều được lưu và hiển thị xem trước đầy đủ | Medium |
+| TC-DOCS-006 | Gửi hồ sơ khi thiếu Bằng lái | Thiếu ảnh Bằng lái | 1. Tải Giấy đăng ký xe<br>
+
+<br>2. Để trống Bằng lái<br>
+
+<br>3. Bấm 'Gửi xét duyệt' | Thiếu GTLX | Báo lỗi 'Vui lòng tải lên hình ảnh Bằng lái xe' | High |
+| TC-DOCS-007 | Admin từ chối hồ sơ không hợp lệ kèm lý do | Admin portal | 1. Chọn tài xế cần duyệt<br>
+
+<br>2. Nhấn 'Từ chối'<br>
+
+<br>3. Nhập lý do 'Ảnh bằng lái bị mờ'<br>
+
+<br>4. Xác nhận | Lý do: Ảnh mờ | Hồ sơ chuyển trạng thái REJECTED; thông báo gửi về cho Tài xế kèm đúng lý do | High |
+| TC-DOCS-008 | Tài xế chưa duyệt cố bật trạng thái Sẵn sàng | Driver status = PENDING_APPROVAL | 1. Cố bật nút 'Sẵn sàng' khi chưa duyệt | Status: PENDING | Công tắc bị disable hoặc hiển thị popup 'Hồ sơ của bạn đang chờ phê duyệt' | High |
+| TC-DOCS-009 | Đăng ký biển số xe đã được tài xế khác sử dụng | Biển số 30F-999.99 đã active | 1. Nhập biển số 30F-999.99<br>
+
+<br>2. Nhấn 'Gửi xét duyệt' | Biển số: 30F-999.99 | Báo lỗi 'Biển số xe này đã được đăng ký bởi tài xế khác' | High |
+| TC-DOCS-010 | Tài xế tự phê duyệt hồ sơ qua API | Dùng tài khoản DRIVER | 1. Gọi API `POST /api/v1/admin/drivers/{id}/approve` bằng Token Driver | Token Driver | API trả về lỗi 403 Forbidden | High |
+| TC-DOCS-011 | Ảnh giấy tờ vượt dung lượng tối đa | File ảnh > 5MB | 1. Chọn file 10MB<br>
+
+<br>2. Tải lên | File 10MB | Báo lỗi 'Dung lượng file vượt quá 5MB' | Medium |
+| TC-DOCS-012 | Gửi hồ sơ khi chưa tải bất kỳ giấy tờ nào | Form trống | 1. Bấm 'Gửi xét duyệt' ngay | Form trống | Báo lỗi yêu cầu tải lên đầy đủ tất cả tài liệu bắt buộc | High |
+| TC-DOCS-013 | Để trống ô Biển số xe | Chưa nhập biển số | 1. Tải đủ ảnh<br>
+
+<br>2. Để trống ô Biển số<br>
+
+<br>3. Bấm 'Gửi' | Biển số: [rỗng] | Báo lỗi 'Vui lòng nhập Biển số xe' | High |
+| TC-DOCS-014 | Biển số sai định dạng | Nhập sai định dạng | 1. Nhập `@@-12345678`<br>
+
+<br>2. Bấm 'Gửi' | Biển số sai | Báo lỗi 'Biển số xe không đúng định dạng (Ví dụ hợp lệ: 29A-123.45)' | Medium |
+| TC-DOCS-015 | Tải lên giấy tờ sai định dạng file | File đính kèm .ZIP/.PDF | 1. Chọn file `doc.zip`<br>
+
+<br>2. Bấm 'Tải lên' | File doc.zip | Báo lỗi 'Định dạng file không hỗ trợ. Chỉ nhận file ảnh PNG, JPG, JPEG' | High |
