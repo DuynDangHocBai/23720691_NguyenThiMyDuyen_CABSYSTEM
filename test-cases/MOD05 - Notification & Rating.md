@@ -1,7 +1,7 @@
 # MOD05 - Notification & Rating
 
 - **Số test case:** 39
-- **Số cột:** 8
+
 
 | Test Case ID | Test Scenario | Test Case | Preconditions | Test Steps | Test Data | Expected Result | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- |
