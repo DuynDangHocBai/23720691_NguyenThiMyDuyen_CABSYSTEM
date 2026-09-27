@@ -11,7 +11,6 @@
 | **Business Analyst** | Làm rõ yêu cầu chưa chốt và chi tiết hóa quy trình nghiệp vụ cho team. |
 | **Nhóm Phát triển** | Thiết kế kiến trúc, lập trình và hoàn thiện hệ thống trong 7 tuần. |
 | **Đối tác Thanh toán** | Tích hợp xử lý giao dịch điện tử. |
-| **Đối tác Thông báo** | Thông báo tức thì đến người dùng. |
 
 ---
 
@@ -35,7 +34,6 @@ quadrantChart
     "Khach hang": [0.95, 0.55]
     "Tai xe": [0.90, 0.45]
     "Doi tac Thanh toan": [0.35, 0.65]
-    "Doi tac Thong bao": [0.30, 0.40]
 ```
 ---
 
@@ -59,20 +57,19 @@ quadrantChart
 | **MOD02** | Đặt xe & Phân công (*Booking & Matching Module*) | Tạo chuyến, định vị thời gian thực, thuật toán tự động ghép nối/tìm tài xế gần nhất và xử lý chuyển tiếp khi từ chối. |
 | **MOD03** | Quản lý Tiến trình Chuyến đi (*Trip Management Module*) | Cập nhật/theo dõi trạng thái chuyến đi theo thời gian thực (ETA, vị trí), lịch sử chuyến và đánh giá tài xế. |
 | **MOD04** | Tính cước & Thanh toán (*Pricing & Payment Module*) | Tính tiền tự động, hỗ trợ tiền mặt và tích hợp Payment Gateway bên ngoài xử lý thanh toán điện tử. |
-| **MOD05** | Thông báo (*Notification Module*) | Gửi thông báo tức thì cho Khách hàng/Tài xế theo từng sự kiện của chuyến đi. |
-| **MOD06** | Vận hành & Báo cáo (*Admin & Analytics Module*) | Giao diện quản trị theo dõi chuyến đi, hỗ trợ xử lý sự cố và xuất báo cáo doanh thu, hiệu suất cho Ban giám đốc. |
+| **MOD05** | Vận hành & Báo cáo (*Admin & Analytics Module*) | Giao diện quản trị theo dõi chuyến đi, hỗ trợ xử lý sự cố và xuất báo cáo doanh thu, hiệu suất cho Ban giám đốc. |
 ---
 
 ## 5. Business Requirements (Yêu cầu Nghiệp vụ)
 
 | ID | Tên Yêu cầu | Mô tả Chi tiết |
 | :--- | :--- | :--- |
-| **BR01** | Quản lý Tài khoản & Phân quyền | Hệ thống hỗ trợ đăng ký, đăng nhập, cập nhật thông tin cá nhân và lịch sử hoạt động cho Khách hàng, Tài xế; đồng thời phân quyền truy cập chặt chẽ cho Nhân viên vận hành. |
-| **BR02** | Đặt xe & Đề xuất Điều phối | Cho phép Khách hàng chọn dịch vụ, nhập điểm đón/đến và gửi yêu cầu; hệ thống ghi nhận vị trí GPS thời gian thực của Tài xế để tự động tìm kiếm, đề xuất và xử lý nhận/từ chối chuyến. |
-| **BR03** | Quản lý Tiến trình Chuyến đi | Cho phép Tài xế cập nhật liên tục các trạng thái chuyến đi (*Đã đến điểm đón, Đã đón khách, Đang di chuyển, Hoàn thành*). |
-| **BR04** | Tính cước & Thanh toán | Tự động tính cước sau khi hoàn thành chuyến đi; hỗ trợ thanh toán tiền mặt và tích hợp thanh toán điện tử an toàn qua Payment Gateway bên ngoài. |
-| **BR05** | Giám sát & Hỗ trợ Vận hành | Cung cấp giao diện quản trị cho Nhân viên vận hành theo dõi danh sách chuyến đi đang diễn ra, trạng thái Tài xế, tra cứu lịch sử và can thiệp xử lý sự cố. |
-| **BR06** | Báo cáo & Đánh giá Dịch vụ | Cung cấp báo cáo thống kê (doanh thu, số chuyến, tỷ lệ hủy, hiệu suất tài xế) cho Ban Giám đốc và cho phép Khách hàng đánh giá (rating/comment) chất lượng phục vụ. |
+| **BR01** | Quản lý Định danh & Xét duyệt Hồ sơ | Hỗ trợ đăng ký, đăng nhập và phân quyền (Khách hàng, Tài xế, Quản trị viên); cung cấp quy trình tải lên và xét duyệt giấy tờ, phương tiện của Tài xế trước khi kích hoạt hoạt động. |
+| **BR02** | Đặt xe & Đề xuất Điều phối | Cho phép Khách hàng chọn lộ trình, xem cước phí dự kiến và tạo chuyến; hệ thống định vị GPS để tự động quét, đề xuất và chuyển tiếp chuyến đi tới Tài xế sẵn sàng gần nhất |
+| **BR03** | Quản lý Vòng đời Chuyến đi | Cung cấp máy trạng thái để Tài xế cập nhật liên tục tiến trình chuyến (Đã đến, Đang di chuyển, Hoàn thành); hỗ trợ theo dõi vị trí real-time và cho phép xử lý hủy chuyến theo chính sách. |
+| **BR04** | Tính cước, Thanh toán & Hoa hồng | Tự động chốt cước phí thực tế sau chuyến đi; hỗ trợ thanh toán tiền mặt/ví điện tử và tự động tính tỷ lệ chiết khấu hoa hồng cho hệ thống/tài xế |
+| **BR05** | Giám sát & Hỗ trợ Vận hành | Cung cấp giao diện trực quan cho Nhân viên vận hành giám sát các chuyến đi đang chạy thời gian thực, hỗ trợ xử lý sự cố (mất GPS, kẹt đơn, khóa tài khoản) |
+| **BR06** | Báo cáo & Đánh giá Dịch vụ | Cho phép Khách hàng đánh giá chất lượng phục vụ sau chuyến đi; đồng thời tổng hợp báo cáo kinh doanh (doanh thu, số chuyến, tỷ lệ hủy, hiệu suất) phục vụ Ban Giám đốc |
 
 ---
 ## 6. Business Process Modeling (Mô hình hóa Quy trình Nghiệp vụ)
@@ -80,156 +77,95 @@ quadrantChart
 ### 6.1. Biểu đồ Tổng quan Toàn bộ Quy trình Nghiệp vụ (Overall Process Map)
 
 ```mermaid
-flowchart TD
-    subgraph Onboarding [1. Khởi tạo & Định danh]
-        P1([6.3. Quy trình Đăng ký & Xét duyệt Tài xế])
+flowchart LR
+    %% Style definitions
+    classDef step fill:#f0f7ff,stroke:#0284c7,stroke-width:2px,color:#0f172a,rx:8,ry:8;
+    classDef highlight fill:#ecfdf5,stroke:#059669,stroke-width:2px,color:#064e3b,rx:8,ry:8;
+
+    S1("<b>1. Đặt xe & Chọn tuyến</b><br/>Khách chọn điểm đón/đến, loại xe & xem giá cước"):::step
+    S2("<b>2. Xác thực & Quét tài xế</b><br/>Hệ thống verify token & quét tài xế READY (bán kính 3-5km)"):::step
+    S3("<b>3. Đề xuất nhận chuyến</b><br/>Gửi offer kèm đếm ngược 15s tới tài xế gần nhất"):::step
+    S4("<b>4. Phản hồi nhận chuyến</b><br/>Tài xế bấm Chấp nhận (hoặc Chuyển tiếp nếu từ chối/timeout)"):::step
+    S5("<b>5. Khởi tạo Chuyến đi</b><br/>Khóa tài xế, tạo chuyến & trả thông tin tài xế cho Khách"):::highlight
+    S6("<b>6. Thực hiện chuyến đi</b><br/>Cập nhật tiến trình: ARRIVED ➔ IN_PROGRESS"):::step
+    S7("<b>7. Hoàn thành & Tính cước</b><br/>Chốt lộ trình thực tế, tính tổng tiền & trích hoa hồng 15%"):::step
+    S8("<b>8. Xử lý Thanh toán</b><br/>Thanh toán tiền mặt hoặc qua Cổng thanh toán điện tử"):::step
+    S9("<b>9. Đánh giá chất lượng</b><br/>Khách hàng chấm điểm 1-5 sao & gửi phản hồi"):::step
+    S10("<b>10. Vận hành & Giám sát</b><br/>Ghi nhận báo cáo doanh thu & giám sát sự cố real-time"):::highlight
+
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8 --> S9 --> S10
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Khách hàng (Customer)
+    actor D as Tài xế (Driver)
+    participant GW as API Gateway
+    participant Auth as Auth & Identity
+    participant Match as Matching Service (Redis)
+    participant Trip as Trip Service
+    participant Pay as Pricing & Payment
+    participant MB as Event Broker (Kafka/EventBus)
+    participant Ops as Admin & Analytics
+
+    %% Bước 1 & 2: Tạo yêu cầu & Quét điều phối
+    Note over C, Match: 1. Đặt xe & Quét điều phối tự động
+    C->>GW: POST /api/bookings (Điểm đón, Điểm đến, Loại xe)
+    GW->>Auth: Xác thực Token (JWT Verification)
+    Auth-->>GW: Token hợp lệ (uid, role=Customer)
+    GW->>Match: Yêu cầu tìm tài xế (Quét Redis GEO bán kính 3-5km)
+    
+    %% Bước 3 & 4: Đề xuất và Nhận chuyến
+    Note over Match, D: 2. Đề xuất nhận chuyến (15s Timeout)
+    Match->>D: Gửi thông báo nhận chuyến (Push Socket + Đếm ngược 15s)
+    alt Tài xế chấp nhận
+        D->>Match: Bấm "Chấp nhận chuyến"
+    else Từ chối hoặc Hết 15 giây
+        Match->>Match: Chuyển tiếp đề xuất tới Tài xế tiếp theo
     end
 
-    subgraph CoreTrip [2. Vòng đời Chuyến đi Cốt lõi]
-        P2([6.1. Luồng Đặt xe & Điều phối Tự động])
-        P3([6.2. Luồng Thực hiện Chuyến đi & Thanh toán])
-        P4([6.4. Quy trình Hủy chuyến đi])
+    %% Bước 5: Tạo chuyến đi
+    Note over Match, Trip: 3. Khởi tạo chuyến đi
+    Match->>Trip: Yêu cầu tạo chuyến (Customer_id, Driver_id)
+    Trip->>Trip: Lưu bản ghi Trip (Status = ACCEPTED)
+    Trip-->>GW: Trả về thông tin Chuyến đi & Tài xế
+    GW-->>C: Hiển thị thông tin xe, tài xế & vị trí real-time
 
-        P2 -->|Chấp nhận chuyến| P3
-        P2 -->|Khách/Tài xế bấm Hủy| P4
-        P3 -->|Phát sinh hủy mid-trip| P4
+    %% Bước 6: Tiến trình chuyến đi
+    Note over D, C: 4. Cập nhật tiến trình chuyến đi
+    D->>Trip: Cập nhật "Đã đến điểm đón" (Status = ARRIVED)
+    Trip->>C: Thông báo: Tài xế đã tới điểm đón (Push Notification)
+    D->>Trip: Bắt đầu di chuyển (Status = IN_PROGRESS)
+    loop Cập nhật GPS (mỗi 3-5 giây)
+        D->>Trip: Bắn tọa độ GPS thực tế
+        Trip->>C: Cập nhật vị trí di chuyển trên bản đồ
     end
 
-    subgraph Operations [3. Quản trị & Tài chính]
-        P5([6.5. Quy trình Hỗ trợ & Can thiệp Vận hành])
-        P6([6.6. Quy trình Đóng soát xét & Đối soát Doanh thu])
+    %% Bước 7 & 8: Hoàn thành & Thanh toán
+    Note over D, Pay: 5. Kết thúc & Thanh toán
+    D->>Trip: Bấm "Hoàn thành chuyến đi" (Status = COMPLETED)
+    Trip->>Pay: Kích hoạt tính cước (Quãng đường thực tế)
+    Pay->>Pay: Tính cước + Trích hoa hồng hệ thống 15%
+    Pay-->>C: Hiển thị hóa đơn & Yêu cầu thanh toán
+    alt Thanh toán Điện tử (Payment Gateway)
+        C->>Pay: Thanh toán qua Cổng điện tử / Ví
+        Pay-->>C: Xác nhận thanh toán thành công
+    else Thanh toán Tiền mặt (Cash)
+        C->>D: Trả tiền mặt cho Tài xế
+        D->>Pay: Xác nhận đã nhận đủ tiền
     end
+    Pay->>Trip: Cập nhật trạng thái thanh toán (PAID)
 
-    P1 -->|Tài xế sẵn sàng| P2
-    P3 -->|Chuyến đi hoàn thành| P6
-    
-    CoreTrip -.->|Phát sinh sự cố/Giao dịch lỗi| P5
-    P5 -.->|Điều chỉnh cước/Khóa tài khoản| P6
-```
-### 6.2. Luồng Đặt xe & Điều phối Tự động (Core Booking & Matching)
+    %% Bước 9: Đánh giá
+    Note over C, Trip: 6. Đánh giá chất lượng
+    C->>Trip: Gửi đánh giá (Rating 1-5 sao + Nhận xét)
+    Trip->>Trip: Cập nhật điểm uy tín trung bình cho Tài xế
 
-```mermaid
-flowchart TD
-    Start([Khách hàng mở app & Nhập vị trí]) --> Request[Gửi yêu cầu đặt xe]
-    Request --> FindDriver[Hệ thống xác định GPS & Quét tài xế READY gần nhất]
-    
-    FindDriver --> CheckFound{Có tài xế phù hợp?}
-    
-    CheckFound -- Không --> NotifyNoDriver[Thông báo không tìm thấy tài xế]
-    NotifyNoDriver --> EndNoDriver([Kết thúc luồng đặt xe])
-
-    CheckFound -- Có --> SendOffer[Gửi thông báo nhận chuyến - Đếm ngược 15s]
-    
-    SendOffer --> DriverResponse{Tài xế phản hồi?}
-    
-    DriverResponse -- Chấp nhận --> ConfirmBooking[Hệ thống xác nhận chuyến & Trả thông tin cho Khách]
-    ConfirmBooking --> Transition[Chuyển sang Luồng Thực hiện chuyến đi]
-
-    DriverResponse -- Từ chối / Hết giờ --> ForwardNext[Chuyển tiếp yêu cầu tới Tài xế tiếp theo]
-    ForwardNext --> CheckFound
-```
-
-### 6.3. Luồng Thực hiện Chuyến đi & Thanh toán (Trip Execution & Payment)
-
-```mermaid
-flowchart TD
-    Transition([Chuyển từ Luồng Đặt xe]) --> DriverArrive[Tài xế cập nhật: Đã đến điểm đón]
-    DriverArrive --> NotifyArrived[Hệ thống gửi Push Notification cho Khách]
-    
-    NotifyArrived --> StartTrip[Tài xế cập nhật: Đã đón khách / Đang di chuyển]
-    
-    subgraph RealTimeTracking [Quá trình di chuyển]
-        StartTrip --> GPSUpdate[Tài xế gửi tọa độ GPS mỗi 3-5 giây]
-        GPSUpdate --> ShowETA[Hệ thống cập nhật vị trí & ETA real-time cho Khách]
-    end
-
-    ShowETA --> FinishTrip[Tài xế cập nhật: Hoàn thành chuyến đi]
-    FinishTrip --> CalcFare[Hệ thống tự động tính tổng cước phí]
-    CalcFare --> ShowFare[Hiển thị cước phí & Lựa chọn thanh toán]
-
-    ShowFare --> PaymentMethod{Phương thức thanh toán?}
-
-    PaymentMethod -- Thanh toán Điện tử --> Gateway[Gửi yêu cầu tới Cổng thanh toán]
-    Gateway --> CheckPay{Thanh toán thành công?}
-    CheckPay -- Có --> IssueInvoice[Hệ thống gửi Hóa đơn điện tử]
-    CheckPay -- Lỗi --> RetryPay[Cảnh báo lỗi / Yêu cầu chuyển sang tiền mặt]
-    RetryPay --> PaymentMethod
-
-    PaymentMethod -- Tiền mặt --> CashPay[Khách trả tiền mặt cho Tài xế]
-    CashPay --> ConfirmCash[Tài xế xác nhận đã nhận đủ tiền]
-    ConfirmCash --> IssueInvoice
-
-    IssueInvoice --> Rating[Khách hàng đánh giá rating/comment]
-    Rating --> EndTrip([Kết thúc chuyến đi])
-```
-
-### 6.4. Quy trình Đăng ký & Xét duyệt Tài xế (Driver Onboarding)
-
-```mermaid
-flowchart TD
-    StartReg([Tài xế tải ứng dụng & Đăng ký]) --> InputInfo[Nhập SĐT, Họ tên, Email]
-    InputInfo --> UploadDocs[Tải lên Bằng lái, Giấy tờ xe, Biển số xe]
-    UploadDocs --> Submit[Gửi hồ sơ xét duyệt]
-    
-    Submit --> AdminReview[NVVH / Admin kiểm tra hồ sơ]
-    
-    AdminReview --> CheckDocs{Hồ sơ hợp lệ?}
-    
-    CheckDocs -- Không --> Reject[Hệ thống gửi thông báo từ chối + Lý do bổ sung]
-    Reject --> UploadDocs
-
-    CheckDocs -- Có --> Approve[Admin bấm Phê duyệt tài khoản]
-    Approve --> ActivateProfile[Kích hoạt hồ sơ Tài xế trong DB]
-    ActivateProfile --> EnableReady[Tài xế có thể Bật trạng thái Sẵn sàng nhận chuyến]
-    EnableReady --> EndOnboard([Hoàn tất Onboarding])
-```
-
-### 6.5. Quy trình Hủy chuyến đi (Trip Cancellation)
-
-```mermaid
-flowchart TD
-    CancelTrigger([Khách hàng / Tài xế bấm Hủy chuyến]) --> CheckPhase{Chuyến đi đang ở trạng thái nào?}
-    
-    CheckPhase -- "ACCEPTED (< 2 phút)" --> FreeCancel[Hủy miễn phí]
-    
-    CheckPhase -- "ACCEPTED (> 2 phút) hoặc ARRIVED" --> PenaltyCheck{Ai là người hủy?}
-    
-    PenaltyCheck -- Khách hàng hủy --> FeeCustomer[Áp dụng phí phạt 10,000 VNĐ vào đơn sau]
-    PenaltyCheck -- Tài xế hủy --> FeeDriver[Trừ 2 điểm uy tín & Khóa nhận chuyến 15p]
-    
-    FeeCustomer --> CancelProcess[Hệ thống cập nhật chuyến sang CANCELLED]
-    FeeDriver --> CancelProcess
-    FreeCancel --> CancelProcess
-
-    CancelProcess --> ReleaseDriver[Giải phóng trạng thái Tài xế & Khách hàng]
-    ReleaseDriver --> EndCancel([Kết thúc luồng Hủy])
-```
-
-### 6.6. Quy trình Can thiệp & Hỗ trợ Vận hành (Ops Intervention & Support)
-
-```mermaid
-flowchart TD
-    Incident([Phát sinh sự cố: Mất kết nối, Tranh chấp, Xe hỏng]) --> SystemDetect{Nguồn phát hiện}
-    
-    SystemDetect -- Hệ thống tự động --> AutoAlert[Cảnh báo đỏ trên Admin Portal: Mất GPS > 3 phút]
-    SystemDetect -- Người dùng bấm Báo cáo --> TicketCreate[Tạo Ticket hỗ trợ khẩn cấp]
-    
-    AutoAlert --> OpsAssign[NVVH tiếp nhận case]
-    TicketCreate --> OpsAssign
-
-    OpsAssign --> CallVerify[NVVH gọi điện xác minh Khách / Tài xế]
-    
-    CallVerify --> ActionChoice{Hướng xử lý}
-    
-    ActionChoice -- Hủy chuyến bị kẹt --> ManualCancel[Bấm Hủy chuyến thủ công & Release tài khoản]
-    ActionChoice -- Điều chỉnh cước phí --> AdjustFare[Sửa cước phí thực tế trên Admin Portal]
-    ActionChoice -- Khóa tài khoản vi phạm --> LockAccount[Khóa tài khoản Tài xế/Khách hàng]
-
-    ManualCancel --> AuditLog[Ghi nhận nhật ký tác động Audit Log]
-    AdjustFare --> AuditLog
-    LockAccount --> AuditLog
-    
-    AuditLog --> CloseTicket([Đóng Ticket hỗ trợ])
+    %% Bước 10: Đồng bộ Báo cáo & Vận hành
+    Note over Trip, Ops: 7. Báo cáo & Giám sát Vận hành
+    Trip-)MB: Publish sự kiện `TripCompletedEvent`
+    MB-)Ops: Consume sự kiện: Cập nhật Dashboard & Thống kê doanh thu
 ```
 
 ---
